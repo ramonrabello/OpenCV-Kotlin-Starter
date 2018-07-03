@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">OpenCV-Kotlin-Starter</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_gray_scale">Gray Scale</string>
+    <string name="action_canny">Canny Edge</string>
+    <string name="action_threshold">Threshold</string>
+    <string name="action_adaptive_threshold">Adaptive Threshold</string>
+    <string name="action_reset">Reset</string>
+    <string name="choose_opencv_algorithms_tip">Select from overflow button some algorithms to be applied on image below.</string>
 </resources>
