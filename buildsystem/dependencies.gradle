@@ -6,6 +6,6 @@ ext {
     targetSdkVersion = 28
 
     // dependencies
-    supportLibraryVersion = ''
+    supportLibraryVersion = '28.0.0-alpha3'
     espressoVersion = '3.0.2'
 }
