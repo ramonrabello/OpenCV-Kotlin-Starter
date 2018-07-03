@@ -1,0 +1,11 @@
+ext {
+
+    // versions
+    minSdkVersion = 15
+    compileSdkVersion = 28
+    targetSdkVersion = 28
+
+    // dependencies
+    supportLibraryVersion = ''
+    espressoVersion = '3.0.2'
+}
