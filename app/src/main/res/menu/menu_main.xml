@@ -3,8 +3,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.github.ramonrabello.opencv.kotlin.starter.MainActivity">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_gray_scale"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="@string/action_gray_scale"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_canny"
+        android:orderInCategory="100"
+        android:title="@string/action_canny"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_threshold"
+        android:orderInCategory="100"
+        android:title="@string/action_threshold"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_adaptive_threshold"
+        android:orderInCategory="100"
+        android:title="@string/action_adaptive_threshold"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_reset"
+        android:orderInCategory="100"
+        android:title="@string/action_reset"
         app:showAsAction="never" />
 </menu>
