@@ -1,19 +1,23 @@
 package com.github.ramonrabello.opencv.kotlin.starter
 
-import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-
-import kotlinx.android.synthetic.main.activity_main.*
+import com.github.ramonrabello.opencv.kotlin.starter.extensions.adaptiveThreshold
+import com.github.ramonrabello.opencv.kotlin.starter.extensions.canny
+import com.github.ramonrabello.opencv.kotlin.starter.extensions.threshold
+import com.github.ramonrabello.opencv.kotlin.starter.extensions.toBitmap
+import com.github.ramonrabello.opencv.kotlin.starter.extensions.toGray
+import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.android.synthetic.main.content_main.image
-import org.opencv.android.Utils
 import org.opencv.core.Mat
-import org.opencv.imgproc.Imgproc
 
 class MainActivity : AppCompatActivity() {
+
+    private val imageBitmap by lazy { (ContextCompat.getDrawable(this, R.drawable.lena) as BitmapDrawable).bitmap }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,39 +25,39 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
     }
 
-    override fun onResume() {
-        super.onResume()
-        convertToGrayScale()
+    private fun applyGrayScale() {
+        val grayMat = Mat()
+        grayMat.toGray(imageBitmap)
+        image.setImageBitmap(grayMat.toBitmap())
+        grayMat.release()
     }
 
     /**
-     * Convert a bitmap to gray scale using OpenCV.
+     * Apply the Canny Edge Algorithm to detect edges of an image.
      */
-    private fun convertToGrayScale() {
+    private fun applyCannyEdge() {
+        val mat = Mat()
+        val dstMat = mat.canny(imageBitmap)
+        image.setImageBitmap(dstMat.toBitmap())
+        dstMat.release()
+    }
 
-        // instantiates a Mat (a matrix representation of an image in OpenCV). Best practices: use
-        // less Mat objects as possible once each new Mat's instance is a new malloc() call in C/C++.
-        val grayMat = Mat()
+    private fun applyThreshold() {
+        val mat = Mat()
+        val dstMat = mat.threshold(imageBitmap)
+        image.setImageBitmap(dstMat.toBitmap())
+        dstMat.release()
+    }
 
-        // gets the ImageView's drawable as bitmap to be used
-        // to Mat conversion
-        val imageBitmap = (image.drawable as BitmapDrawable).bitmap
+    private fun applyAdaptiveThreshold() {
+        val mat = Mat()
+        val dstMat = mat.adaptiveThreshold(imageBitmap)
+        image.setImageBitmap(dstMat.toBitmap())
+        dstMat.release()
+    }
 
-        // converts the bitmap to Mat representation
-        Utils.bitmapToMat(imageBitmap, grayMat)
-
-        // converts the Mat to gray scale representation
-        Imgproc.cvtColor(grayMat, grayMat, Imgproc.COLOR_BGRA2GRAY)
-
-        // create a bitmap based on the gray-scaled Mat
-        val grayBitmap = Bitmap.createBitmap(grayMat.cols(), grayMat.rows(), Bitmap.Config.ARGB_8888)
-
-        // converts back from Mat to Bitmap in order to
-        // show the Bitmap on ImageView
-        Utils.matToBitmap(grayMat, grayBitmap)
-
-        // displays back the converted Bitmap on ImageView
-        image.setImageBitmap(grayBitmap)
+    private fun resetImage() {
+        image.setImageBitmap(imageBitmap)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -62,13 +66,31 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean =// Handle action bar item clicks here. The action bar will
+    // automatically handle clicks on the Home/Up button, so long
+    // as you specify a parent activity in AndroidManifest.xml.
+            when (item.itemId) {
+                R.id.action_gray_scale -> {
+                    applyGrayScale()
+                    true
+                }
+                R.id.action_canny -> {
+                    applyCannyEdge()
+                    true
+                }
+                R.id.action_threshold -> {
+                    applyThreshold()
+                    true
+                }
+                R.id.action_adaptive_threshold -> {
+                    applyAdaptiveThreshold()
+                    true
+                }
+                R.id.action_reset -> {
+                    resetImage()
+                    true
+                }
+                else -> super.onOptionsItemSelected(item)
+            }
+
 }
