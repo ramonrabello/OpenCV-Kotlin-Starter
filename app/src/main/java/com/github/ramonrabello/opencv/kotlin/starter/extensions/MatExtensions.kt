@@ -2,41 +2,51 @@ package com.github.ramonrabello.opencv.kotlin.starter.extensions
 
 import android.graphics.Bitmap
 import org.opencv.android.Utils
+import org.opencv.core.CvType
 import org.opencv.core.Mat
+import org.opencv.core.Size
 import org.opencv.imgproc.Imgproc
 
 /**
  * Extension functions for [Mat].
  */
-fun <T : Mat> T.toGray(bitmap: Bitmap) {
+fun Mat.toGray(bitmap: Bitmap) {
     Utils.bitmapToMat(bitmap, this)
     Imgproc.cvtColor(this, this, Imgproc.COLOR_RGB2GRAY)
 }
 
-fun <T : Mat> T.threshold(bitmap: Bitmap, thresh: Double = 50.toDouble(), maxVal: Double = 255.toDouble()): T {
-    this.toGray(bitmap)
-    Imgproc.threshold(this, this, thresh, maxVal, Imgproc.THRESH_BINARY)
-    return this
+inline fun Mat.gaussianBlur(bitmap: Bitmap, kSize: Size = Size(125.toDouble(), 125.toDouble()), sigmaX:Double = 0.toDouble(), block: (Bitmap) -> Unit) {
+    Utils.bitmapToMat(bitmap, this)
+    Imgproc.GaussianBlur(this, this, kSize, sigmaX)
+    return block(this.toBitmap())
 }
 
-fun <T : Mat> T.adaptiveThreshold(bitmap: Bitmap, maxValue: Double = 255.toDouble(),
+inline fun Mat.canny(bitmap: Bitmap, threshold1: Double = 20.toDouble(), threshold2: Double = 255.toDouble(), block: (Bitmap) -> Unit) {
+    this.toGray(bitmap)
+    Imgproc.Canny(this, this, threshold1, threshold2)
+    return block(this.toBitmap())
+}
+
+fun Mat.threshold(bitmap: Bitmap, thresh: Double = 50.toDouble(), maxVal: Double = 255.toDouble(), type:Int = Imgproc.THRESH_BINARY, block: (Bitmap) -> Unit) {
+    this.toGray(bitmap)
+    Imgproc.threshold(this, this, thresh, maxVal, type)
+    return block(this.toBitmap())
+}
+
+fun Mat.adaptiveThreshold(bitmap: Bitmap, maxValue: Double = 255.toDouble(),
                                   adaptiveMethod: Int = Imgproc.ADAPTIVE_THRESH_MEAN_C,
                                   thresholdType: Int = Imgproc.THRESH_BINARY,
                                   blockSize: Int = 11,
-                                  c: Double = 12.toDouble()): T {
+                                  c: Double = 12.toDouble(), block: (Bitmap) -> Unit) {
     this.toGray(bitmap)
     Imgproc.adaptiveThreshold(this, this, maxValue, adaptiveMethod, thresholdType, blockSize, c)
-    return this
+    return block(this.toBitmap())
 }
 
-fun <T : Mat> T.canny(bitmap: Bitmap, threshold1: Double = 20.toDouble(), threshold2: Double = 255.toDouble()): T {
-    this.toGray(bitmap)
-    Imgproc.Canny(this, this, threshold1, threshold2)
-    return this
-}
-
-fun <T : Mat> T.toBitmap(config: Bitmap.Config = Bitmap.Config.ARGB_8888): Bitmap {
+fun Mat.toBitmap(config: Bitmap.Config = Bitmap.Config.ARGB_8888): Bitmap {
     val bitmap = Bitmap.createBitmap(this.cols(), this.rows(), config)
     Utils.matToBitmap(this, bitmap)
     return bitmap
 }
+
+fun Mat.inGray() = this.type() == CvType.CV_8U
