@@ -6,4 +6,5 @@
     <string name="action_adaptive_threshold">Adaptive Threshold</string>
     <string name="action_reset">Reset</string>
     <string name="choose_opencv_algorithms_tip">Select from overflow button some algorithms to be applied on image below.</string>
+    <string name="action_gaussian_blur">Gaussian Blur</string>
 </resources>
