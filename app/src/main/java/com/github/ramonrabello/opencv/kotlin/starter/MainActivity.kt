@@ -8,6 +8,7 @@ import android.view.Menu
 import android.view.MenuItem
 import com.github.ramonrabello.opencv.kotlin.starter.extensions.adaptiveThreshold
 import com.github.ramonrabello.opencv.kotlin.starter.extensions.canny
+import com.github.ramonrabello.opencv.kotlin.starter.extensions.gaussianBlur
 import com.github.ramonrabello.opencv.kotlin.starter.extensions.threshold
 import com.github.ramonrabello.opencv.kotlin.starter.extensions.toBitmap
 import com.github.ramonrabello.opencv.kotlin.starter.extensions.toGray
@@ -26,10 +27,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun applyGrayScale() {
-        val grayMat = Mat()
-        grayMat.toGray(imageBitmap)
-        image.setImageBitmap(grayMat.toBitmap())
-        grayMat.release()
+        val mat = Mat()
+        mat.toGray(imageBitmap)
+        image.setImageBitmap(mat.toBitmap())
+        mat.release()
+    }
+
+    private fun applyGaussianBlur(){
+        val mat = Mat()
+        mat.gaussianBlur(imageBitmap) { image.setImageBitmap(it) }
+        mat.release()
     }
 
     /**
@@ -37,23 +44,20 @@ class MainActivity : AppCompatActivity() {
      */
     private fun applyCannyEdge() {
         val mat = Mat()
-        val dstMat = mat.canny(imageBitmap)
-        image.setImageBitmap(dstMat.toBitmap())
-        dstMat.release()
+        mat.canny(imageBitmap) { image.setImageBitmap(it) }
     }
 
+    /**
+     * Apply the Threshold Algorithm.
+     */
     private fun applyThreshold() {
         val mat = Mat()
-        val dstMat = mat.threshold(imageBitmap)
-        image.setImageBitmap(dstMat.toBitmap())
-        dstMat.release()
+        mat.threshold(imageBitmap) { image.setImageBitmap(it) }
     }
 
     private fun applyAdaptiveThreshold() {
         val mat = Mat()
-        val dstMat = mat.adaptiveThreshold(imageBitmap)
-        image.setImageBitmap(dstMat.toBitmap())
-        dstMat.release()
+        mat.adaptiveThreshold(imageBitmap) { image.setImageBitmap(it) }
     }
 
     private fun resetImage() {
@@ -72,6 +76,10 @@ class MainActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.action_gray_scale -> {
                     applyGrayScale()
+                    true
+                }
+                R.id.action_gaussian_blur -> {
+                    applyGaussianBlur()
                     true
                 }
                 R.id.action_canny -> {
