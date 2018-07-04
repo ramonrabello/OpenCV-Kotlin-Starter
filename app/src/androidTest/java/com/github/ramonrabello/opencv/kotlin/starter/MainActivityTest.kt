@@ -39,6 +39,12 @@ class MainActivityTest {
     }
 
     @Test
+    fun whenOverflowButtonPressed_chooseGaussianBlurItem() {
+        Espresso.openActionBarOverflowOrOptionsMenu(context)
+        onView(withText(context.resources.getString(R.string.action_gaussian_blur))).perform(click())
+    }
+
+    @Test
     fun whenOverflowButtonPressed_chooseCannyEdgeItem() {
         Espresso.openActionBarOverflowOrOptionsMenu(context)
         onView(withText(context.resources.getString(R.string.action_canny))).perform(click())
